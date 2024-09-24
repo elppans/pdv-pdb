@@ -27,8 +27,8 @@ exec 2> >(tee -a "/var/log/"${0##*/}"_error.log")
 opcao="$1"
 ip="127.0.0.1"
 port="5432"
-banco="ZeusRetail"
-usuario="postgres"
+banco="NomeBanco"
+usuario="UsuarioBanco"
 
 # Exportação das variáveis
 export opcao
