@@ -1,0 +1,12 @@
+#!/bin/bash
+# Uso via crontab
+
+# Copiar comando para /usr/bin e dar perissão de execução
+# Adicionar em /etc/crontab:
+#
+# Executar script para o efetuar um VACUUM e depois REINDEX
+# 55   0  *  *  *  root /usr/bin/pdv-pdb_vr # Executar todo dia as 00 Hs 55 Min
+
+/opt/pdv-pdb/pdv-pdb_organiza.sh --vacuum ; 
+sleep 2 ;  
+/opt/pdv-pdb/pdv-pdb_organiza.sh --reindexdb ;
