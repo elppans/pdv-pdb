@@ -1,8 +1,8 @@
 #!/bin/bash
 # APENAS LOCAL
 
-## Copiar comando para /usr/bin e dar perissão de execução
-## Adicionar em /etc/crontab:
+# Copiar comando para /usr/bin e dar perissão de execução
+# Adicionar em /etc/crontab:
 #
 # Executar script para o backup automático No horario determinado
 # 00   23  *  *  *  root /usr/bin/comando.sh
