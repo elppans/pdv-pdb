@@ -1,0 +1,42 @@
+#!/bin/bash
+# APENAS LOCAL
+
+## Copiar comando para /usr/bin e dar perissão de execução
+## Adicionar em /etc/crontab:
+#
+# Executar script para o backup automático No horario determinado
+# 00   23  *  *  *  root /usr/bin/comando.sh
+
+if [ "$(id -u)" != "0" ]; then
+echo "Deve executar o comando como super usuario!"
+exit 0
+fi
+
+##      Usando arquivo de log - INÍCIO
+
+# Habilita log copiando a saída padrão para o arquivo LOGFILE
+
+exec 1> >(tee -a "/var/log/"${0##*/}".log")
+
+# faz o mesmo para a saída de ERROS
+
+exec 2> >(tee -a "/var/log/"${0##*/}"_error.log")
+
+##      Usando arquivo de log - FIM
+
+CMD="$(basename "$0")"
+PASTA='/mnt/Backup_Zanthus'
+versao_banco="$(/usr/pgsql-10/bin/psql -p 5432 -h 127.0.0.1 -U postgres -d ZeusRodRaf -t -c "select num_versao_atual from tab_controle_versao tcv")"
+export versao_banco
+
+if mount | grep -e "$PASTA" >> /dev/null ; then
+        #echo -e "$PASTA"
+        #ZeusBD -bkp -bdir "$PASTA"
+        BKP=`date +%Y%m%d_%H%M%S`
+#/usr/pgsql-10/bin/pg_dump --file "/mnt/Backup_Zanthus/ZeusRetail-2.14.145.0_"$BKP".backup" --host "127.0.0.1" --port "5432" --username "postgres" --no-password --verbose --format=c --blobs "ZeusRetail"
+/usr/pgsql-10/bin/pg_dump --verbose --host 127.0.0.1 --port 5432 --username postgres --no-password --no-owner --no-acl -Fc ZeusRodRaf > "$PASTA/ZeusRodRaf-$versao_banco_$BKP.backup"
+        echo -e "Backup OK - $BKP" | tee /tmp/"$CMD".log
+  else
+        BKP=`date +%Y%m%d_%H%M%S`
+        echo -e "Não foi possível fazer o Backup - $BKP" | tee -a /tmp/"$CMD"_err.log
+fi
