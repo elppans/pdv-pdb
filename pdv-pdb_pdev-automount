@@ -2,11 +2,11 @@
 
 CMD="$(basename "$0")"
 
-## Copiar comando para /usr/bin e dar perissão de execução
-## Adicionar em /etc/crontab:
-
+# Copiar comando para /usr/bin e dar perissão de execução
+# Adicionar em /etc/crontab:
+#
 # A cada 1 minuto, verificar HD Externo, se (des)montado no local configurado
-#*/1   *  *  *  *  root /usr/bin/disk_usb.sh
+# */1   *  *  *  *  root /usr/bin/script.sh
 
 DEVUSB=`file /dev/disk/by-path/* | grep -v "broken symbolic link" | grep usb | awk '{print $5}' | sed "s/'//" | cut -d '/' -f '3' | head -1`
 
