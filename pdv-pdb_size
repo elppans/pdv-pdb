@@ -1,5 +1,9 @@
 #!/bin/bash
-bd="$1"
+
+user="$1"
+bd="$2"
+
+export user
 export bd
 
-ZeusBD -c "SELECT pg_size_pretty(pg_database_size('$bd'));"
+psql -p 5432 -h 127.0.0.1 -U "$user" -c "SELECT pg_size_pretty(pg_database_size('$bd'));"
