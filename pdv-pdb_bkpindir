@@ -26,7 +26,8 @@ exec 2> >(tee -a "/var/log/"${0##*/}"_error.log")
 
 CMD="$(basename "$0")"
 PASTA='/mnt/Backup_Zanthus'
-versao_banco="$(/usr/pgsql-10/bin/psql -p 5432 -h 127.0.0.1 -U postgres -d ZeusRodRaf -t -c "select num_versao_atual from tab_controle_versao tcv")"
+banco='ZeusRodRaf'
+versao_banco="$(/usr/pgsql-10/bin/psql -p 5432 -h 127.0.0.1 -U postgres -d $banco -t -c "select num_versao_atual from tab_controle_versao tcv")"
 export versao_banco
 
 if mount | grep -e "$PASTA" >> /dev/null ; then
@@ -34,7 +35,7 @@ if mount | grep -e "$PASTA" >> /dev/null ; then
         #ZeusBD -bkp -bdir "$PASTA"
         BKP=`date +%Y%m%d_%H%M%S`
 #/usr/pgsql-10/bin/pg_dump --file "/mnt/Backup_Zanthus/ZeusRetail-2.14.145.0_"$BKP".backup" --host "127.0.0.1" --port "5432" --username "postgres" --no-password --verbose --format=c --blobs "ZeusRetail"
-/usr/pgsql-10/bin/pg_dump --verbose --host 127.0.0.1 --port 5432 --username postgres --no-password --no-owner --no-acl -Fc ZeusRodRaf > "$PASTA/ZeusRodRaf-$versao_banco_$BKP.backup"
+/usr/pgsql-10/bin/pg_dump --verbose --host 127.0.0.1 --port 5432 --username postgres --no-password --no-owner --no-acl -Fc "$banco" > "$PASTA/ZeusRodRaf-$versao_banco_$BKP.backup"
         echo -e "Backup OK - $BKP" | tee /tmp/"$CMD".log
   else
         BKP=`date +%Y%m%d_%H%M%S`
