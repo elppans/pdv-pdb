@@ -25,47 +25,50 @@ exec 2> >(tee -a "/var/log/"${0##*/}"_error.log")
 
 # Variáveis para configuração geral
 opcao="$1"
-ip="127.0.0.1"
-port="5432"
-banco="NomeBanco"
-usuario="UsuarioBanco"
+PGHOST="127.0.0.1" # Endereço IP do seu Banco
+PGPORT="5432" # Porta utilizada no seu banco
+PGDATABASE="BANCO" # Nome do seu Banco de Dados
+PGUSER="postgres" # Usuário do seu banco
+PGPASSWORD="postgres" # Senha do seu banco
+
 
 # Exportação das variáveis
 export opcao
-export ip
-export port
-export banco
-export usuario
+export PGHOST
+export PGPORT
+export PGDATABASE
+export PGUSER
+export PGPASSWORD
 
 # Fazer vacuumdb, VACUUM e ANALYZE no banco, completo:
 vacuumdb_func() {
 echo -e "Iniciando VACUUM - $(date)..."
-vacuumdb -h "$ip" -p "$port" -U "$usuario" -w -d "$banco" -v -f -z
+vacuumdb -w -v -f -z
 echo -e "Finalizado VACUUM - $(date)"
 }
  
 # Fazer reindexdb, REINDEX no banco, completo:
 reindexdb_func() {
 echo "REINDEXANDO banco - $(date)..."
-reindexdb -h "$ip" -p "$port" -U "$usuario" -w -d "$banco"
+reindexdb -w
 echo -e "REINDEX FINALIZADO - $(date)..."
  }
  
 # Fazer vacuumdb, VACUUM e ANALYZE em tabelas expecificas
 vacuumdb_tables_func() {
 echo -e "Iniciando VACUUM Tables - $(date)..."
-vacuumdb -h "$ip" -p "$port" -U "$usuario" -w -d "$banco" -v -f -z -t public.tab_controle_nfe
-vacuumdb -h "$ip" -p "$port" -U "$usuario" -w -d "$banco" -v -f -z -t public.tab_nota_header
-vacuumdb -h "$ip" -p "$port" -U "$usuario" -w -d "$banco" -v -f -z -t public.tab_nota_item
+vacuumdb -w -v -f -z -t public.tab_controle_nfe
+vacuumdb -w -v -f -z -t public.tab_nota_header
+vacuumdb -w -v -f -z -t public.tab_nota_item
 echo -e "Finalizado VACUUM Tables - $(date)"
 }
 
 # Fazer reindexdb, REINDEX em tabelas expecificas
 vacuumdb_tables_func() {
 echo -e "Iniciando REINDEX Tables - $(date)..."
-reindexdb -h "$ip" -p "$port" -U "$usuario" -w -d "$banco" -t public.tab_controle_nfe
-reindexdb -h "$ip" -p "$port" -U "$usuario" -w -d "$banco" -t public.tab_nota_header
-reindexdb -h "$ip" -p "$port" -U "$usuario" -w -d "$banco" -t public.tab_nota_item
+reindexdb -w -t public.tab_controle_nfe
+reindexdb -w -t public.tab_nota_header
+reindexdb -w -t public.tab_nota_item
 echo -e "Finalizado REINDEX Tables - $(date)"
 }
 
